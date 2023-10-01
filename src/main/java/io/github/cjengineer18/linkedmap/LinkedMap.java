@@ -16,7 +16,7 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.cjengineer18.utils;
+package io.github.cjengineer18.linkedmap;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;
@@ -31,17 +31,25 @@ import java.util.Set;
  * A map that uses a {@code LinkedList} as it's core.
  * 
  * @author cjengineer18
+ * 
+ * @version 1.0.1
  *
- * @param <Key> The key.
- * @param <Value> The value.
+ * @param <Key>
+ *            The key.
+ * @param <Value>
+ *            The value.
  * 
  * @see LinkedList
+ * @see AbstractMap
  */
 public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 
 	// Fields
 
+	// The map's core.
 	private LinkedList<LinkedMapEntry> core;
+
+	// The map's set.
 	private LinkedMapSet set;
 
 	// Constructors
@@ -55,7 +63,7 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 	}
 
 	/**
-	 * Creates a map and transfers all elements from {@code map} to the new map.
+	 * Creates a map and transfers all elements from {@code map} to this map.
 	 * 
 	 * @param map
 	 *            The map.
@@ -67,11 +75,31 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 
 	// Override methods
 
+	/**
+	 * Returns a set reflecting the map's content.
+	 * 
+	 * @return A set reflecting the map's content.
+	 * 
+	 * @see AbstractMap#entrySet()
+	 */
 	@Override
 	public Set<Entry<Key, Value>> entrySet() {
 		return set;
 	}
 
+	/**
+	 * Adds or changes a {@code value} associated by {@code key}.
+	 * 
+	 * @param key
+	 *            The key.
+	 * @param value
+	 *            The new value.
+	 * 
+	 * @return The old value of {@code key} or {@code null} if not exist else if
+	 *         the key was associated with {@code null}.
+	 * 
+	 * @see AbstractMap#put(Object, Object)
+	 */
 	@Override
 	public Value put(Key key, Value value) {
 		int index = findEntry(key);
@@ -85,6 +113,11 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 		return oldValue;
 	}
 
+	/**
+	 * Empty this map.
+	 * 
+	 * @see AbstractMap#clear()
+	 */
 	@Override
 	public void clear() {
 		core = new LinkedList<LinkedMapEntry>();
@@ -145,6 +178,11 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 			this.value = value;
 
 			return oldValue;
+		}
+
+		@Override
+		public String toString() {
+			return "LinkedMapEntry [key=" + key + ", value=" + value + "]";
 		}
 
 	}

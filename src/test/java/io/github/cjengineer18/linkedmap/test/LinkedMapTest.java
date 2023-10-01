@@ -16,7 +16,7 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.cjengineer18.test;
+package io.github.cjengineer18.linkedmap.test;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.github.cjengineer18.utils.LinkedMap;
+import io.github.cjengineer18.linkedmap.LinkedMap;
 
 public class LinkedMapTest {
 
