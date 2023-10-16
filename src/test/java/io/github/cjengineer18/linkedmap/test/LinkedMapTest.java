@@ -20,8 +20,10 @@ package io.github.cjengineer18.linkedmap.test;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,20 +86,51 @@ public class LinkedMapTest {
 
 	@Test
 	public void testPutKeyValue() {
-		// Part 1: new key/value pair
-
 		testMap = new LinkedMap<String, Object>();
 
 		Assert.assertNull("New key returns null as oldValue", testMap.put("dummy", 200));
 		Assert.assertEquals("Key 'dummy' has value 200", 200, testMap.get("dummy"));
+	}
 
-		// Part 2: modify key/value
-
+	@Test
+	public void testPutKeyValueModify() {
 		testMap = new LinkedMap<String, Object>(sampleMap);
 
 		Assert.assertEquals("Change value for 'key2' returns original value", sampleMap.get("key2"),
 				testMap.put("key2", 30));
 		Assert.assertEquals("Key 'key2' has new value 30", 30, testMap.get("key2"));
+	}
+
+	@Test
+	public void testRemoveObject() {
+		testMap = new LinkedMap<String, Object>(sampleMap);
+
+		Assert.assertEquals("'key2' must be removed", sampleMap.get("key2"), testMap.remove("key2"));
+		Assert.assertNull("'key2' must be null", testMap.get("key2"));
+		Assert.assertEquals("Size must change", sampleMap.size() - 1, testMap.size());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testEntry() {
+		String format = "LinkedMapEntry [key=%s, value=%s]";
+
+		Map.Entry<String, Object> entry;
+
+		testMap = new LinkedMap<String, Object>(sampleMap);
+
+		entry = (Map.Entry<String, Object>) testMap.entrySet().toArray()[0];
+
+		Assert.assertEquals("Entry key must be 'key1'", "key1", entry.getKey());
+		Assert.assertEquals("Value must be the same", sampleMap.get("key1"), entry.getValue());
+		Assert.assertEquals("Entry's toString must have same format",
+				String.format(Locale.ENGLISH, format, entry.getKey(), entry.getValue()), entry.toString());
+	}
+
+	@After
+	public void restore() {
+		testMap = null;
+		sampleMap = null;
 	}
 
 }

@@ -20,10 +20,8 @@ package io.github.cjengineer18.linkedmap;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,12 +30,10 @@ import java.util.Set;
  * 
  * @author cjengineer18
  * 
- * @version 1.0.1
+ * @version 1.0.2
  *
- * @param <Key>
- *            The key.
- * @param <Value>
- *            The value.
+ * @param <Key>   The key.
+ * @param <Value> The value.
  * 
  * @see LinkedList
  * @see AbstractMap
@@ -65,8 +61,7 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 	/**
 	 * Creates a map and transfers all elements from {@code map} to this map.
 	 * 
-	 * @param map
-	 *            The map.
+	 * @param map The map.
 	 */
 	public LinkedMap(Map<? extends Key, ? extends Value> map) {
 		this();
@@ -90,13 +85,11 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 	/**
 	 * Adds or changes a {@code value} associated by {@code key}.
 	 * 
-	 * @param key
-	 *            The key.
-	 * @param value
-	 *            The new value.
+	 * @param key   The key.
+	 * @param value The new value.
 	 * 
-	 * @return The old value of {@code key} or {@code null} if not exist else if
-	 *         the key was associated with {@code null}.
+	 * @return The old value of {@code key} or {@code null} if not exist else if the
+	 *         key was associated with {@code null}.
 	 * 
 	 * @see AbstractMap#put(Object, Object)
 	 */
@@ -128,20 +121,14 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 	/**
 	 * Finds the index of the entry based on the key.
 	 * 
-	 * @param key
-	 *            The key.
+	 * @param key The key.
 	 * 
 	 * @return The index of the key, or -1 if not found.
 	 */
 	private int findEntry(Key key) {
-		List<Object> keys = Arrays.asList(keySet().toArray());
-		int index = -1;
+		LinkedList<Key> keys = new LinkedList<Key>(keySet());
 
-		if (keys.contains(key)) {
-			index = keys.indexOf(key);
-		}
-
-		return index;
+		return keys.stream().filter(k -> k.equals(key)).map(k -> keys.indexOf(k)).findFirst().orElse(-1);
 	}
 
 	// Private sub-classes
