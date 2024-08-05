@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 /**
  * A map that uses a {@code LinkedList} as it's core.
@@ -66,6 +68,38 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 	public LinkedMap(Map<? extends Key, ? extends Value> map) {
 		this();
 		putAll(map);
+	}
+
+	// Public methods
+
+	public void forEach(IIndexedBiConsumer<Key, Value, Integer> consumer) throws Exception {
+		LinkedList<Key> keys = new LinkedList<Key>(keySet());
+		Key key;
+
+		for (int i = 0; i < size(); i++) {
+			key = keys.get(i);
+
+			consumer.accept(key, get(key), i);
+		}
+	}
+
+	public <E> LinkedMap<E, Value> remapKeys(Function<Key, E> keyMapper) {
+		return remap(keyMapper, UnaryOperator.identity());
+	}
+
+	public <E> LinkedMap<Key, E> remapValues(Function<Value, E> valueMapper) {
+		return remap(UnaryOperator.identity(), valueMapper);
+	}
+
+	public <NKey, NValue> LinkedMap<NKey, NValue> remap(Function<Key, NKey> keyMapper,
+			Function<Value, NValue> valueMapper) {
+		LinkedMap<NKey, NValue> newMap = new LinkedMap<NKey, NValue>();
+
+		this.forEach((k, v) -> {
+			newMap.put(keyMapper.apply(k), valueMapper.apply(v));
+		});
+
+		return newMap;
 	}
 
 	// Override methods
@@ -218,6 +252,13 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 		public int size() {
 			return core.size();
 		}
+
+	}
+
+	@FunctionalInterface
+	private interface IIndexedBiConsumer<E1, E2, N extends Number> {
+
+		void accept(E1 arg0, E2 arg1, N index) throws Exception;
 
 	}
 
