@@ -24,8 +24,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
+
+import io.github.cjengineer18.linkedmap.interfaces.functional.IIndexedBiConsumer;
 
 /**
  * A map that uses a {@code LinkedList} as it's core.
@@ -45,7 +45,7 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 	// Fields
 
 	// The map's core.
-	private LinkedList<LinkedMapEntry> core;
+	private LinkedList<SimpleEntry<Key, Value>> core;
 
 	// The map's set.
 	private LinkedMapSet set;
@@ -56,7 +56,7 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 	 * Creates a empty map.
 	 */
 	public LinkedMap() {
-		core = new LinkedList<LinkedMapEntry>();
+		core = new LinkedList<SimpleEntry<Key, Value>>();
 		set = new LinkedMapSet();
 	}
 
@@ -72,8 +72,9 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 
 	// Public methods
 
-	public void forEach(IIndexedBiConsumer<Key, Value, Integer> consumer) throws Exception {
+	public void forEach(IIndexedBiConsumer<Key, Value> consumer) throws Exception {
 		LinkedList<Key> keys = new LinkedList<Key>(keySet());
+
 		Key key;
 
 		for (int i = 0; i < size(); i++) {
@@ -81,25 +82,6 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 
 			consumer.accept(key, get(key), i);
 		}
-	}
-
-	public <E> LinkedMap<E, Value> remapKeys(Function<Key, E> keyMapper) {
-		return remap(keyMapper, UnaryOperator.identity());
-	}
-
-	public <E> LinkedMap<Key, E> remapValues(Function<Value, E> valueMapper) {
-		return remap(UnaryOperator.identity(), valueMapper);
-	}
-
-	public <NKey, NValue> LinkedMap<NKey, NValue> remap(Function<Key, NKey> keyMapper,
-			Function<Value, NValue> valueMapper) {
-		LinkedMap<NKey, NValue> newMap = new LinkedMap<NKey, NValue>();
-
-		this.forEach((k, v) -> {
-			newMap.put(keyMapper.apply(k), valueMapper.apply(v));
-		});
-
-		return newMap;
 	}
 
 	// Override methods
@@ -130,10 +112,16 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 	@Override
 	public Value put(Key key, Value value) {
 		int index = findEntry(key);
-		LinkedMapEntry entry = index == -1 ? new LinkedMapEntry(key) : core.get(index);
-		Value oldValue = entry.setValue(value);
+		boolean found = index > -1;
+		SimpleEntry<Key, Value> entry = found ? core.get(index) : new SimpleEntry<Key, Value>(key, value);
 
-		if (index == -1) {
+		Value oldValue;
+
+		if (found) {
+			oldValue = entry.setValue(value);
+		} else {
+			oldValue = null;
+
 			core.add(entry);
 		}
 
@@ -147,7 +135,7 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 	 */
 	@Override
 	public void clear() {
-		core = new LinkedList<LinkedMapEntry>();
+		core = new LinkedList<SimpleEntry<Key, Value>>();
 	}
 
 	// Private methods
@@ -162,51 +150,10 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 	private int findEntry(Key key) {
 		LinkedList<Key> keys = new LinkedList<Key>(keySet());
 
-		return keys.stream().filter(k -> k.equals(key)).map(k -> keys.indexOf(k)).findFirst().orElse(-1);
+		return keys.stream().filter(key::equals).mapToInt(keys::indexOf).findFirst().orElse(-1);
 	}
 
 	// Private sub-classes
-
-	/**
-	 * LinkedMap's entry class.
-	 * 
-	 * @author cjengineer18
-	 *
-	 */
-	private class LinkedMapEntry implements Entry<Key, Value> {
-
-		private Key key;
-		private Value value;
-
-		public LinkedMapEntry(Key key) {
-			this.key = key;
-		}
-
-		@Override
-		public Key getKey() {
-			return key;
-		}
-
-		@Override
-		public Value getValue() {
-			return value;
-		}
-
-		@Override
-		public Value setValue(Value value) {
-			Value oldValue = this.value;
-
-			this.value = value;
-
-			return oldValue;
-		}
-
-		@Override
-		public String toString() {
-			return "LinkedMapEntry [key=" + key + ", value=" + value + "]";
-		}
-
-	}
 
 	/**
 	 * LinkedMap's iterator class.
@@ -216,7 +163,7 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 	 */
 	private class LinkedMapIterator implements Iterator<Entry<Key, Value>> {
 
-		private Iterator<LinkedMapEntry> iterator = core.iterator();
+		private Iterator<SimpleEntry<Key, Value>> iterator = core.iterator();
 
 		@Override
 		public boolean hasNext() {
@@ -252,13 +199,6 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 		public int size() {
 			return core.size();
 		}
-
-	}
-
-	@FunctionalInterface
-	private interface IIndexedBiConsumer<E1, E2, N extends Number> {
-
-		void accept(E1 arg0, E2 arg1, N index) throws Exception;
 
 	}
 

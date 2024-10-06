@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.github.cjengineer18.linkedmap.LinkedMap;
+import io.github.cjengineer18.linkedmap.interfaces.functional.IThrowableUnaryOperator;
 
 public class LinkedMapTest {
 
@@ -113,7 +114,7 @@ public class LinkedMapTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testEntry() {
-		String format = "LinkedMapEntry [key=%s, value=%s]";
+		String format = "%s=%s";
 
 		Map.Entry<String, Object> entry;
 
@@ -125,6 +126,19 @@ public class LinkedMapTest {
 		Assert.assertEquals("Value must be the same", sampleMap.get("key1"), entry.getValue());
 		Assert.assertEquals("Entry's toString must have same format",
 				String.format(Locale.ENGLISH, format, entry.getKey(), entry.getValue()), entry.toString());
+	}
+
+	@Test
+	public void testIdentity() {
+		try {
+			IThrowableUnaryOperator<String> testOperator = IThrowableUnaryOperator.identity();
+			String str = "abc";
+
+			Assert.assertTrue("Identity function must return same result", testOperator.apply(str).equals(str));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@After
