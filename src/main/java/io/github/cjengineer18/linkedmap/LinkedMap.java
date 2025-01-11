@@ -113,15 +113,12 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 	public Value put(Key key, Value value) {
 		int index = findEntry(key);
 		boolean found = index > -1;
+		Value oldValue = null;
 		SimpleEntry<Key, Value> entry = found ? core.get(index) : new SimpleEntry<Key, Value>(key, value);
-
-		Value oldValue;
 
 		if (found) {
 			oldValue = entry.setValue(value);
 		} else {
-			oldValue = null;
-
 			core.add(entry);
 		}
 

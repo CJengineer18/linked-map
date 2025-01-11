@@ -1,22 +1,27 @@
 package io.github.cjengineer18.linkedmap.util;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 import io.github.cjengineer18.linkedmap.LinkedMap;
 import io.github.cjengineer18.linkedmap.interfaces.functional.IThrowableFunction;
 import io.github.cjengineer18.linkedmap.interfaces.functional.IThrowableUnaryOperator;
 
-public final class MapUtilities {
+public final class LinkedMapUtilities {
 
-	private MapUtilities() {
+	private LinkedMapUtilities() {
 		throw new UnsupportedOperationException();
 	}
 
-	/*
-	 * T = Old Key U = Old Value V = New Key W = New Value
-	 */
+	/* ** Re-mapping functions ** */
 
-	// All different classes
+	// T = Old Key
+	// U = Old Value
+	// V = New Key
+	// W = New Value
+
+	/* All different classes */
 
 	public <T, U, V> LinkedMap<V, U> remapKeys(Map<T, U> map, IThrowableFunction<T, V> keyFunction) throws Exception {
 		return remap(map, keyFunction, IThrowableUnaryOperator.identity());
@@ -39,7 +44,7 @@ public final class MapUtilities {
 		return newMap;
 	}
 
-	// Same class pair (Unary operation)
+	/* Same class pair (Unary operation) */
 
 	public <T, U> LinkedMap<T, U> remapKeys(Map<T, U> map, IThrowableUnaryOperator<T> keyFunction) throws Exception {
 		return remap(map, keyFunction, IThrowableUnaryOperator.identity());
@@ -53,6 +58,14 @@ public final class MapUtilities {
 	public <T, U> LinkedMap<T, U> remap(Map<T, U> map, IThrowableUnaryOperator<T> keyFunction,
 			IThrowableUnaryOperator<U> valueFunction) throws Exception {
 		return remap(map, (IThrowableFunction<T, T>) keyFunction, (IThrowableFunction<U, U>) valueFunction);
+	}
+
+	/* ** Other utilities ** */
+
+	// T, U, ... = Generic classes
+
+	public <T> Set<T> createLinkedMapSet() {
+		return Collections.newSetFromMap(new LinkedMap<T, Boolean>());
 	}
 
 }

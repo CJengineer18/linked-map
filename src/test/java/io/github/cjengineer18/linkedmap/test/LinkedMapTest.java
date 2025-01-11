@@ -136,8 +136,25 @@ public class LinkedMapTest {
 
 			Assert.assertTrue("Identity function must return same result", testOperator.apply(str).equals(str));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// ignore
+		}
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testForEach() {
+		try {
+			Object[] sampleEntries = sampleMap.entrySet().toArray();
+			testMap = new LinkedMap<String, Object>(sampleMap);
+
+			testMap.forEach((k, v, idx) -> {
+				Map.Entry<String, Object> entry = (Map.Entry<String, Object>) sampleEntries[idx];
+
+				Assert.assertTrue("Key must correspond to index entry", entry.getKey().equals(k));
+				Assert.assertTrue("Value must correspond to index entry", entry.getValue().equals(v));
+			});
+		} catch (Exception exc) {
+			// ignore
 		}
 	}
 
