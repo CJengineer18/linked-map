@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Cristian José Jiménez Diazgranados
+ * Copyright 2023-2026 Cristian José Jiménez Diazgranados
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the “Software”), to deal in the Software without restriction,
@@ -32,7 +32,7 @@ import io.github.cjengineer18.linkedmap.interfaces.functional.IIndexedBiConsumer
  * 
  * @author cjengineer18
  * 
- * @version 1.0.2
+ * @version 1.0.3
  *
  * @param <Key>   The key.
  * @param <Value> The value.
@@ -74,10 +74,11 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 
 	public void forEach(IIndexedBiConsumer<Key, Value> consumer) throws Exception {
 		LinkedList<Key> keys = new LinkedList<Key>(keySet());
+		int size = size();
 
 		Key key;
 
-		for (int i = 0; i < size(); i++) {
+		for (int i = 0; i < size; i++) {
 			key = keys.get(i);
 
 			consumer.accept(key, get(key), i);
@@ -111,7 +112,7 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 	 */
 	@Override
 	public Value put(Key key, Value value) {
-		int index = findEntry(key);
+		int index = findEntryIndex(key);
 		boolean found = index > -1;
 		Value oldValue = null;
 		SimpleEntry<Key, Value> entry = found ? core.get(index) : new SimpleEntry<Key, Value>(key, value);
@@ -144,7 +145,7 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 	 * 
 	 * @return The index of the key, or -1 if not found.
 	 */
-	private int findEntry(Key key) {
+	private int findEntryIndex(Key key) {
 		LinkedList<Key> keys = new LinkedList<Key>(keySet());
 
 		return keys.stream().filter(key::equals).mapToInt(keys::indexOf).findFirst().orElse(-1);
@@ -195,6 +196,18 @@ public class LinkedMap<Key, Value> extends AbstractMap<Key, Value> {
 		@Override
 		public int size() {
 			return core.size();
+		}
+
+		@Override
+		public boolean add(Entry<Key, Value> e) {
+			Key key = e.getKey();
+			int index = findEntryIndex(key);
+
+			if (index == -1) {
+				return core.add(new SimpleEntry<Key, Value>(key, e.getValue()));
+			} else {
+				return false;
+			}
 		}
 
 	}

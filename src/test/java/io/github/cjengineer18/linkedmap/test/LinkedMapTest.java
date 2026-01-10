@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -80,6 +82,20 @@ public class LinkedMapTest {
 		testMap = new LinkedMap<String, Object>(sampleMap);
 
 		Assert.assertNotNull("Set must exist", testMap.entrySet());
+		Assert.assertEquals("Both sets have same size", sampleMap.entrySet().size(), testMap.entrySet().size());
+		Assert.assertArrayEquals("Both sets has similar elements", sampleMap.entrySet().toArray(),
+				testMap.entrySet().toArray());
+	}
+
+	@Test
+	public void testEntrySetAddAllCollectionQExtendsEntry() {
+		testMap = new LinkedMap<String, Object>();
+
+		Set<Entry<String, Object>> mapEntrySet = testMap.entrySet();
+
+		Assert.assertNotNull("Set must exist", mapEntrySet);
+		Assert.assertEquals("Set must be empty", 0, mapEntrySet.size());
+		Assert.assertEquals("Set method 'addAll' must return true", true, mapEntrySet.addAll(sampleMap.entrySet()));
 		Assert.assertEquals("Both sets have same size", sampleMap.entrySet().size(), testMap.entrySet().size());
 		Assert.assertArrayEquals("Both sets has similar elements", sampleMap.entrySet().toArray(),
 				testMap.entrySet().toArray());
