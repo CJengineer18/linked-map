@@ -95,7 +95,7 @@ public class LinkedMapTest {
 
 		Assert.assertNotNull("Set must exist", mapEntrySet);
 		Assert.assertEquals("Set must be empty", 0, mapEntrySet.size());
-		Assert.assertEquals("Set method 'addAll' must return true", true, mapEntrySet.addAll(sampleMap.entrySet()));
+		Assert.assertTrue("Set method 'addAll' must return true", mapEntrySet.addAll(sampleMap.entrySet()));
 		Assert.assertEquals("Both sets have same size", sampleMap.entrySet().size(), testMap.entrySet().size());
 		Assert.assertArrayEquals("Both sets has similar elements", sampleMap.entrySet().toArray(),
 				testMap.entrySet().toArray());

@@ -71,7 +71,7 @@ public class LinkedSetTest {
 	public void testAddObject() throws Exception {
 		testSet = new LinkedSet<Object>();
 
-		Assert.assertEquals("The method 'add' must return true", true, testSet.add(12));
+		Assert.assertTrue("The method 'add' must return true", testSet.add(12));
 		Assert.assertEquals("New set size must be 1", 1, testSet.size());
 	}
 
@@ -79,7 +79,7 @@ public class LinkedSetTest {
 	public void testRemoveObject() throws Exception {
 		testSet = new LinkedSet<Object>(sampleSet);
 
-		Assert.assertEquals("The method 'remove' must return true", true, testSet.remove(123));
+		Assert.assertTrue("The method 'remove' must return true", testSet.remove(123));
 		Assert.assertEquals("New set size must be 2", 2, testSet.size());
 	}
 
@@ -87,7 +87,7 @@ public class LinkedSetTest {
 	public void testRemoveIfPredicateObject() throws Exception {
 		testSet = new LinkedSet<Object>(sampleSet);
 
-		Assert.assertEquals("The method 'removeIf' must return true", true, testSet.removeIf(o -> o.equals(12L)));
+		Assert.assertTrue("The method 'removeIf' must return true", testSet.removeIf(o -> o.equals(12L)));
 		Assert.assertEquals("New set size must be 2", 2, testSet.size());
 	}
 
